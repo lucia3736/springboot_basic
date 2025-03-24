@@ -8,7 +8,8 @@ on:
 jobs:
   build-deploy:
     runs-on: self-hosted
-
+    env:
+      JAVA_HOME: /opt/homebrew/Cellar/openjdk@17/17.0.14/libexec/openjdk.jdk/Contents/Home
     steps:
       # 1. GitHub 리포지토리에서 최신 코드 체크아웃
       - name: Checkout code
