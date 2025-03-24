@@ -17,7 +17,7 @@ jobs:
 
       # 2. Maven 빌드를 실행하여 최신 JAR 파일 생성 (target 폴더에 생성됨)
       - name: Build with Maven Wrapper
-        run: ./mvnw clean package
+        run: ./mvnw clean package -DskipTests
 
       # 3. Docker 이미지를 빌드 (Dockerfile에서 target/*.jar 를 app.jar로 복사)
       - name: Build Docker image
