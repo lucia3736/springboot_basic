@@ -1,0 +1,33 @@
+name: Build and Deploy to Local PC
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-deploy:
+    runs-on: self-hosted
+
+    steps:
+      # 1. GitHub 리포지토리에서 최신 코드 체크아웃
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # 2. Maven 빌드를 실행하여 최신 JAR 파일 생성 (target 폴더에 생성됨)
+      - name: Build with Maven Wrapper
+        run: ./mvnw clean package
+
+      # 3. Docker 이미지를 빌드 (Dockerfile에서 target/*.jar 를 app.jar로 복사)
+      - name: Build Docker image
+        run: docker build -t my-memberservice:latest .
+
+      # 4. 기존에 실행 중인 컨테이너가 있다면 종료하고 삭제 (없으면 에러 무시)
+      - name: Stop existing container
+        run: |
+          docker stop memberservice || true
+          docker rm memberservice || true
+
+      # 5. 새 컨테이너를 백그라운드에서 실행 (호스트의 8080 포트를 컨테이너의 8080 포트와 매핑)
+      - name: Run new container
+        run: docker run -d --name memberservice -p 8080:8080 my-memberservice:latest
